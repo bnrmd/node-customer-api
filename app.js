@@ -6,7 +6,6 @@ const { check, validationResult } = require('express-validator/check');
 const express = require('express');
 const app = express();
 
-
 app.use(express.json());
 
 const salt = bcrypt.genSaltSync(10); // salt for password hash
@@ -83,8 +82,8 @@ app.put('/api/customers/:id', [
         } 
 
         // Update customer
-        debug(`Updating customer ${customer.id}'s email: ${customer.email} -> ${req.body.email}`)
         customer.email = req.body.email;
+        debug(`Updated customer ${customer.id}'s email: ${customer.email} -> ${req.body.email}`)
         
         // Return updated customer
         res.send(customer);
@@ -100,8 +99,8 @@ app.delete('/api/customers/:id', (req, res) => {
 
     const index = customers.indexOf(customer); // Get customer index
     // Remove customer
-    debug(`Removing customer: ${customer.id} : ${customer.email}`)
     customers.splice(index, 1);
+    debug(`Removed customer: ${customer.id} : ${customer.email}`);
 
     // Return the same customer
     res.send(customer);
