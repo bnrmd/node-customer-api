@@ -1,16 +1,19 @@
 const uuidv4 = require('uuid/v4');
 const debug = require('debug')('app:db');
+const bcrypt = require('bcryptjs');
 const util = require('util');
 const { check, validationResult } = require('express-validator/check');
 const express = require('express');
 const app = express();
 
 
-app.use(express.json()); //
+app.use(express.json());
+
+const salt = bcrypt.genSaltSync(10); // salt for password hash
 
 const customers = [
-    { id: uuidv4(), name: 'Default User', email: 'default@gmail.com', password: 'testpass' },
-    { id: uuidv4(), name: 'Ben R', email: 'ben.r@gmail.com', password: 'testpass'}
+    { id: uuidv4(), name: 'Default User', email: 'default@gmail.com', password: bcrypt.hashSync('testpass', salt) },
+    { id: uuidv4(), name: 'Ben R', email: 'ben.r@gmail.com', password: bcrypt.hashSync('testpass', salt)}
 ]
 
 debug('App startup...');
@@ -55,7 +58,7 @@ app.post('/api/customers', [
             id: uuidv4(),
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password // hash later
+            password: bcrypt.hashSync(req.body.password, salt)
         }
 
         customers.push(customer);
@@ -89,8 +92,7 @@ app.put('/api/customers/:id', [
 );
 
 app.delete('/api/customers/:id', (req, res) => {
-    // Look up the customer
-    // If not existing, return 404
+    // Look up the customer, if not existing, return 404
     const customer = customers.find(c => c.id === req.params.id);
     if (!customer) {
         return res.status(404).send('The customer with the given id was not found.');
