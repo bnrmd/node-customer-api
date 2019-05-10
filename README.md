@@ -2,9 +2,9 @@
 ##### To display debugging messages, set an environment variable:
 
  ###### Windows
-    `set DEBUG=app:db`
+     set DEBUG=app:db
  ###### Mac
-  	`export DEBUG=app:db`
+     export DEBUG=app:db
 
 
 ##### To set different environments (to-do):
