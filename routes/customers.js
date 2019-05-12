@@ -6,6 +6,20 @@ const bcrypt = require('bcryptjs');
 const express = require('express');
 const router = express.Router();
 
+//const url = "mongodb://localhost:27017/bank";
+
+const MongoClient = require('mongodb').MongoClient,format=require('util').format;
+
+MongoClient.connect('mongodb://localhost:27017/bank', (err,db) => {
+    if(err){
+        throw err;
+    } else {
+        console.log("Connected");
+    }
+    db.close();
+})
+
+
 const salt = bcrypt.genSaltSync(10); // salt for password hash
 
 const customers = [
@@ -71,12 +85,12 @@ router.put('/:id', [
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
-        } 
+        }
 
         // Update customer
         customer.email = req.body.email;
         debug(`Updated customer ${customer.id}'s email: ${customer.email} -> ${req.body.email}`)
-        
+
         // Return updated customer
         res.send(customer);
     }
